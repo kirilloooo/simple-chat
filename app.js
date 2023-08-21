@@ -43,60 +43,49 @@ registerButton.addEventListener("click", () => {
   const password = passwordInput.value;
 
   auth.createUserWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      const user = userCredential.user;
-      const userRef = database.ref("users").child(user.uid);
-
-      userRef.set({
-        email: user.email,
-        username: "", // Вы можете добавить поле "username" и позволить пользователю задать имя
-        avatarURL: "" // Ссылка на аватар пользователя
-      });
-    })
     .catch(error => alert(error.message));
+});
 
+// Обработка выхода из аккаунта
+signOutButton.addEventListener("click", () => {
+  auth.signOut();
+});
 
+// Обработка отправки сообщения
+sendButton.addEventListener("click", () => {
+  const message = messageInput.value;
+  if (message.trim() !== "") {
+    const timestamp = new Date().getTime();
+    database.ref("messages").push({
+      user: currentUser.email,
+      message: message,
+      timestamp: timestamp
+    });
+    messageInput.value = "";
+  }
+});
 
-  // Обработка выхода из аккаунта
-  signOutButton.addEventListener("click", () => {
-    auth.signOut();
-  });
-
-  // Обработка отправки сообщения
-  sendButton.addEventListener("click", () => {
-    const message = messageInput.value;
-    if (message.trim() !== "") {
-      const timestamp = new Date().getTime();
-      database.ref("messages").push({
-        senderUID: currentUser.uid,
-        timestamp: timestamp,
-        message: message
-      });
-      messageInput.value = "";
-    }
-  });
-
-  // Отслеживание изменения аутентификации
+// Отслеживание изменения аутентификации
 auth.onAuthStateChanged(user => {
   if (user) {
-      currentUser = user;
-      authContainer.style.display = "none";
-      chatContainer.style.display = "block";
-      userDisplay.textContent = "Logged in as: " + user.email;
+    currentUser = user;
+    authContainer.style.display = "none";
+    chatContainer.style.display = "block";
+    userDisplay.textContent = "Logged in as: " + user.email;
 
-      // Загрузка сообщений
-      database.ref("messages").on("child_added", snapshot => {
-          const messageData = snapshot.val();
-          const messageElement = document.createElement("div");
-          messageElement.textContent = messageData.senderUID + ": " + messageData.message;
-          messagesContainer.appendChild(messageElement);
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      });
+    // Загрузка сообщений
+    database.ref("messages").on("child_added", snapshot => {
+      const messageData = snapshot.val();
+      const messageElement = document.createElement("div");
+      messageElement.textContent = messageData.user + ": " + messageData.message;
+      messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
   } else {
-      currentUser = null;
-      authContainer.style.display = "block";
-      chatContainer.style.display = "none";
-      userDisplay.textContent = "";
-      messagesContainer.innerHTML = "";
+    currentUser = null;
+    authContainer.style.display = "block";
+    chatContainer.style.display = "none";
+    userDisplay.textContent = "";
+    messagesContainer.innerHTML = "";
   }
 });
