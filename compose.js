@@ -1,5 +1,5 @@
 
-var msg = 'hello *i am a* pedophile';
+var msg = 'hello *i am a* prog';
 
 var mySubString = str.substring(
   var str = 'one:two;three';
