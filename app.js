@@ -2,9 +2,10 @@
 const firebaseConfig = {
   apiKey: "AIzaSyDxN2sMttt084T-Xnmfh48VrTjFcbyE0p0",
   authDomain: "git-chat-online.firebaseapp.com",
+  databaseURL: "https://git-chat-online-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "git-chat-online",
-  storageBucket: "gs://git-chat-online.appspot.com",
-  // messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  storageBucket: "git-chat-online.appspot.com",
+  messagingSenderId: "804896987204",
   appId: "1:804896987204:web:03dcdded024451db540411"
 };
 
